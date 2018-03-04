@@ -23,6 +23,7 @@ import android.annotation.SuppressLint
 import android.view.ViewAnimationUtils
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.view.View
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener  {
@@ -47,18 +48,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //region Content
 
-    enum class Pages { Notes, Downloads, Categories;
+    enum class Pages { Notes, Downloads, Categories, Search;
         companion object {
             fun from(name: String?): Pages? = when(name){
                 Notes.name -> Notes
                 Downloads.name -> Downloads
                 Categories.name -> Categories
+                Search.name -> Search
                 else -> null
             }
         }
     }
 
     private val notesView: NotesView by lazy { NotesView(this) }
+    private val searchView: NotesView by lazy { SearchView(this) }
 
     private fun show(page: Pages){
         currentPage = page
@@ -66,6 +69,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //1. Escoger la vista que vamos a mostrar
         val view = when(page){
             Pages.Notes -> notesView
+            Pages.Search -> searchView
             else -> notesView
         }
 
@@ -165,6 +169,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // Called when SearchView is collapsing
                 if (searchItem.isActionViewExpanded) {
                     animateSearchToolbar(1, false, false)
+                    show(Pages.Notes)
                 }
                 return true
             }
@@ -172,6 +177,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                 // Called when SearchView is expanding
                 animateSearchToolbar(1, true, true)
+                show(Pages.Search)
                 return true
             }
         })

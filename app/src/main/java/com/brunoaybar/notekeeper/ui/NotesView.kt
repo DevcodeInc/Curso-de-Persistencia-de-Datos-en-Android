@@ -8,7 +8,7 @@ import com.brunoaybar.notekeeper.model.Nota
 import com.brunoaybar.notekeeper.ui.adapters.NotesAdapter
 import com.brunoaybar.notekeeper.ui.extensions.isTablet
 
-class NotesView(context: Context): RecyclerView(context){
+open class NotesView(context: Context): RecyclerView(context){
 
     private val notesAdapter: NotesAdapter = NotesAdapter()
 
@@ -21,6 +21,6 @@ class NotesView(context: Context): RecyclerView(context){
         notesAdapter.notas = notas
     }
 
-    private fun getSpanCount() = if(context.isTablet()) 3 else 1
+    private fun getSpanCount() = if(context.isTablet()) 3 else 2
 
 }
