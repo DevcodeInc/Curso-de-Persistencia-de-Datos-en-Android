@@ -5,9 +5,6 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import com.brunoaybar.notekeeper.R
@@ -16,45 +13,93 @@ import com.brunoaybar.notekeeper.persistance.NotesRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import android.support.v4.view.MenuItemCompat.isActionViewExpanded
-import android.support.v4.view.MenuItemCompat
-import android.content.res.TypedArray
-import android.content.res.Resources.Theme
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
-import android.opengl.ETC1.getHeight
 import android.view.animation.TranslateAnimation
 import android.view.animation.AlphaAnimation
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
-import android.content.res.Resources
-import android.opengl.ETC1.getWidth
 import android.view.ViewAnimationUtils
 import android.os.Build
 import android.support.v4.content.ContextCompat
 
 
-
-
-
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener  {
 
-    private lateinit var adapter: NotesAdapter
+    private lateinit var currentPage: Pages
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        adapter = NotesAdapter()
-        notasRecyclerView.layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
-        notasRecyclerView.adapter = adapter
-        actualizarData()
+
+        val page = restorePage(savedInstanceState) ?: Pages.Notes
+        show(page)
 
         fab.setOnClickListener { view ->
             NotesRepository.agregar("asdfasdfasf")
-            actualizarData()
+            actualizarNotas()
         }
+
+        setupDrawer()
+    }
+
+    //region Content
+
+    enum class Pages { Notes, Downloads, Categories;
+        companion object {
+            fun from(name: String?): Pages? = when(name){
+                Notes.name -> Notes
+                Downloads.name -> Downloads
+                Categories.name -> Categories
+                else -> null
+            }
+        }
+    }
+
+    private val notesView: NotesView by lazy { NotesView(this) }
+
+    private fun show(page: Pages){
+        currentPage = page
+
+        //1. Escoger la vista que vamos a mostrar
+        val view = when(page){
+            Pages.Notes -> notesView
+            else -> notesView
+        }
+
+        //2. Mostrarla
+        with(mainFrameLayout){
+            removeAllViews()
+            addView(view)
+        }
+
+        //3. Actualizar su contenido
+        when(view){
+            notesView -> actualizarNotas()
+        }
+    }
+
+    private val PARAM_PAGE = "param_page"
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putString(PARAM_PAGE, currentPage.name)
+    }
+
+    private fun restorePage(bundle: Bundle?): Pages?{
+        return Pages.from(bundle?.getString(PARAM_PAGE))
+    }
+
+    private fun actualizarNotas(){
+        notesView.actualizar(NotesRepository.getNotas())
+    }
+
+    //endregion
+
+    //region Drawer
+
+    private fun setupDrawer() {
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -63,12 +108,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
     }
-
-    private fun actualizarData(){
-        adapter.notas = NotesRepository.getNotas()
-    }
-
-    //region Drawer
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -94,20 +133,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
+            R.id.nav_notes -> {
+                show(Pages.Notes)
             }
-            R.id.nav_gallery -> {
-
+            R.id.nav_categories -> {
+                show(Pages.Categories)
             }
-            R.id.nav_slideshow -> {
-
+            R.id.nav_download -> {
+                show(Pages.Downloads)
             }
             R.id.nav_share -> {
 
             }
-            R.id.nav_send -> {
-
+            R.id.nav_settings -> {
+                SettingsActivity.start(this)
             }
         }
 
@@ -208,8 +247,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawer_layout.setStatusBarBackgroundColor(getThemeColor(R.attr.colorPrimaryDark))
         }
     }
-
-
 
     //endregion
 }

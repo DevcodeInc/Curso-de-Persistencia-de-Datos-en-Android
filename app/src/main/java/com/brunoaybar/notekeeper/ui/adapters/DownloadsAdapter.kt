@@ -1,4 +1,4 @@
-package com.brunoaybar.notekeeper.ui
+package com.brunoaybar.notekeeper.ui.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -12,8 +12,8 @@ import com.brunoaybar.notekeeper.R
 import com.brunoaybar.notekeeper.model.Nota
 import kotlin.properties.Delegates
 
-class NotesAdapter
-    : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+class DownloadsAdapter
+    : RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
 
     var notas: List<Nota> by Delegates.observable(listOf()){ _, _, _ ->
         notifyDataSetChanged()
@@ -30,11 +30,6 @@ class NotesAdapter
 
         holder.textoContenido.text = nota.contenido
 
-        holder.botonDescargar.setOnClickListener {
-
-        }
-
-        holder.botonEliminar.setOnClickListener { }
     }
 
     override fun getItemCount(): Int {
