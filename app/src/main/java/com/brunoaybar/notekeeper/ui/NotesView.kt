@@ -12,6 +12,9 @@ open class NotesView(context: Context): RecyclerView(context){
 
     private val notesAdapter: NotesAdapter = NotesAdapter()
 
+    var listener: NotesAdapter.Listener? = null
+    set(value) { notesAdapter.listener = value }
+
     init {
         layoutManager = StaggeredGridLayoutManager(getSpanCount(), LinearLayoutManager.VERTICAL)
         adapter = notesAdapter

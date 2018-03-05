@@ -5,35 +5,36 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import com.brunoaybar.notekeeper.R
+import com.brunoaybar.notekeeper.model.Categoria
 
-import com.brunoaybar.notekeeper.model.Nota
 import kotlin.properties.Delegates
 
-class DownloadsAdapter
-    : RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
+class CategoriesAdapter
+    : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
 
-    var notas: List<Nota> by Delegates.observable(listOf()){ _, _, _ ->
+    var categorias: List<Categoria> by Delegates.observable(listOf()){ _, _, _ ->
         notifyDataSetChanged()
     }
 
     private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_nota, parent,false))
+        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_select_category, parent,false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val nota = notas[position]
+        val categoria = categorias[position]
 
-        holder.textoContenido.text = nota.contenido
+        holder.categoryTextView.text = categoria.nombre
+        holder.checkImageView.visibility = View.GONE
 
     }
 
     override fun getItemCount(): Int {
-        return notas.size
+        return categorias.size
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -43,9 +44,9 @@ class DownloadsAdapter
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val textoContenido: TextView = itemView.findViewById(R.id.contentTextView)
-        val botonDescargar: ImageButton = itemView.findViewById(R.id.downloadButton)
-        val botonEliminar: ImageButton = itemView.findViewById(R.id.deleteButton)
+        val categoryTextView: TextView = itemView.findViewById(R.id.categoryTextView)
+        val checkImageView: ImageView = itemView.findViewById(R.id.checkImageView)
+
 
     }
 }

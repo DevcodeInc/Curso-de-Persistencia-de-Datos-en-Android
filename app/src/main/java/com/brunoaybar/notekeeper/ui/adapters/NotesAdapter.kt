@@ -12,8 +12,14 @@ import com.brunoaybar.notekeeper.R
 import com.brunoaybar.notekeeper.model.Nota
 import kotlin.properties.Delegates
 
-class NotesAdapter
+class NotesAdapter(var listener: Listener? = null)
     : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+
+    interface Listener {
+        fun onSelectNote(nota: Nota)
+        fun onDownloadNote(nota: Nota)
+        fun onDeleteNote(nota: Nota)
+    }
 
     var notas: List<Nota> by Delegates.observable(listOf()){ _, _, _ ->
         notifyDataSetChanged()
@@ -31,10 +37,16 @@ class NotesAdapter
         holder.textoContenido.text = nota.contenido
 
         holder.botonDescargar.setOnClickListener {
-
+            listener?.onDownloadNote(nota)
         }
 
-        holder.botonEliminar.setOnClickListener { }
+        holder.botonEliminar.setOnClickListener {
+            listener?.onDeleteNote(nota)
+        }
+
+        holder.itemView.setOnClickListener{
+            listener?.onSelectNote(nota)
+        }
     }
 
     override fun getItemCount(): Int {

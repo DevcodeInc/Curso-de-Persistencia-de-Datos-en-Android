@@ -23,8 +23,9 @@ import android.annotation.SuppressLint
 import android.view.ViewAnimationUtils
 import android.os.Build
 import android.support.v4.content.ContextCompat
-import android.view.View
-
+import com.brunoaybar.notekeeper.model.Nota
+import com.brunoaybar.notekeeper.persistance.CategoriasRepository
+import com.brunoaybar.notekeeper.ui.adapters.NotesAdapter
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener  {
 
@@ -39,8 +40,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         show(page)
 
         fab.setOnClickListener { view ->
-            NotesRepository.agregar("asdfasdfasf")
-            actualizarNotas()
+            NoteActivity.start(this)
         }
 
         setupDrawer()
@@ -48,11 +48,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //region Content
 
-    enum class Pages { Notes, Downloads, Categories, Search;
+    enum class Pages { Notes, Categories, Search;
         companion object {
             fun from(name: String?): Pages? = when(name){
                 Notes.name -> Notes
-                Downloads.name -> Downloads
                 Categories.name -> Categories
                 Search.name -> Search
                 else -> null
@@ -62,6 +61,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val notesView: NotesView by lazy { NotesView(this) }
     private val searchView: NotesView by lazy { SearchView(this) }
+    private val categoriesView: CategoriesView by lazy { CategoriesView(this) }
 
     private fun show(page: Pages){
         currentPage = page
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = when(page){
             Pages.Notes -> notesView
             Pages.Search -> searchView
-            else -> notesView
+            Pages.Categories -> categoriesView
         }
 
         //2. Mostrarla
@@ -82,7 +82,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //3. Actualizar su contenido
         when(view){
             notesView -> actualizarNotas()
+            categoriesView -> actualizarCategorias()
         }
+
+        //4. Actualizar titulo
+        when(page){
+            Pages.Notes -> title = getString(R.string.navigation_option_notas)
+            Pages.Categories -> title = getString(R.string.navigation_option_categorias)
+            else -> { /* do nothing */ }
+        }
+    }
+
+    private fun actualizarNotas(){
+        notesView.actualizar(NotesRepository.getNotas())
+        notesView.listener = object : NotesAdapter.Listener{
+            override fun onSelectNote(nota: Nota) {
+                NoteActivity.start(this@MainActivity, nota)
+            }
+
+            override fun onDownloadNote(nota: Nota) {
+
+            }
+
+            override fun onDeleteNote(nota: Nota) {
+
+            }
+
+        }
+        searchItem?.isVisible = true
+    }
+
+    private fun actualizarCategorias(){
+        categoriesView.actualizar(CategoriasRepository.getCategorias())
+        searchItem?.isVisible = false
     }
 
     private val PARAM_PAGE = "param_page"
@@ -93,10 +125,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun restorePage(bundle: Bundle?): Pages?{
         return Pages.from(bundle?.getString(PARAM_PAGE))
-    }
-
-    private fun actualizarNotas(){
-        notesView.actualizar(NotesRepository.getNotas())
     }
 
     //endregion
@@ -121,17 +149,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    private var searchItem: MenuItem? = null
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        setupSearch(menu.findItem(R.id.m_search))
+        menuInflater.inflate(getMenuForCurrentPage(), menu)
+        searchItem = menu.findItem(R.id.m_search)
+        setupSearch(searchItem)
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+    private fun getMenuForCurrentPage() = when(currentPage){
+        Pages.Categories -> R.menu.menu_main
+        else -> R.menu.menu_main
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -142,9 +170,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_categories -> {
                 show(Pages.Categories)
-            }
-            R.id.nav_download -> {
-                show(Pages.Downloads)
             }
             R.id.nav_share -> {
 
@@ -162,7 +187,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //region Search
 
-    private fun setupSearch(searchItem: MenuItem){
+    private fun setupSearch(searchItem: MenuItem?){
+        if(searchItem == null) return
 
         searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {

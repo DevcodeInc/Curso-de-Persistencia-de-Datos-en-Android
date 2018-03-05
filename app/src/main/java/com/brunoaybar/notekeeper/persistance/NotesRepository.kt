@@ -6,19 +6,34 @@ import java.util.*
 object NotesRepository {
 
     private var notes = mutableListOf(
-            Nota(id = "1", contenido = getTestContent(50), fechaCreacion = Date(), fechaModificacion = Date()),
-            Nota(id = "2", contenido = getTestContent(30), fechaCreacion = Date(), fechaModificacion = Date()),
-            Nota(id = "3", contenido = getTestContent(10), fechaCreacion = Date(), fechaModificacion = Date()),
-            Nota(id = "4", contenido = getTestContent(50), fechaCreacion = Date(), fechaModificacion = Date()),
-            Nota(id = "5", contenido = getTestContent(20), fechaCreacion = Date(), fechaModificacion = Date()),
-            Nota(id = "6", contenido = getTestContent(40), fechaCreacion = Date(), fechaModificacion = Date())
+            createNote(id = "1",  contenido = getTestContent(30)),
+            createNote(id = "2",  contenido = getTestContent(10)),
+            createNote(id = "3",  contenido = getTestContent(50)),
+            createNote(id = "4",  contenido = getTestContent(20)),
+            createNote(id = "5",  contenido = getTestContent(40))
     )
 
     fun getNotas(): List<Nota> = notes
 
-    fun agregar(nota: String){
-        notes.add(Nota("1", nota, Date(), Date()))
+    fun getNota(id: String): Nota? {
+        return getNotas().find { it.id == id }
     }
+
+    fun agregar(id: String?, title: String?, contenido: String){
+        if(id == null) {
+            notes.add(createNote("1", title, contenido))
+        }else {
+            notes.forEachIndexed { index, nota ->
+                if(nota.id == id) {
+                    val newNote = nota.copy(titulo = title, contenido = contenido)
+                    notes[index] = newNote
+                }
+            }
+        }
+    }
+
+    private fun createNote(id: String, title: String? = null, contenido: String) =
+            Nota(id, title, contenido, fechaCreacion = Date(), fechaModificacion = Date())
 
 
     private fun getTestContent(times: Int): String{

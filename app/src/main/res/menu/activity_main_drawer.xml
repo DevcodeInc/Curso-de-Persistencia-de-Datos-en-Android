@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group >
         <item
             android:id="@+id/nav_notes"
             android:icon="@drawable/ic_folder"
@@ -12,10 +12,6 @@
             android:id="@+id/nav_categories"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/navigation_option_categorias" />
-        <item
-            android:id="@+id/nav_download"
-            android:icon="@drawable/ic_file_download_24dp"
-            android:title="@string/navigation_option_descargas" />
     </group>
 
     <item android:title="Otros">

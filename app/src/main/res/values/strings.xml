@@ -15,6 +15,9 @@
     <string name="navigation_option_compartir">Compartir Curso</string>
     <string name="navigation_option_settings">Configuraciones</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="note_title">Título</string>
+    <string name="note_content_hint">Escribe aquí...</string>
+    <string name="note_option_categories">Categorias</string>
+    <string name="note_option_save">Guardar</string>
+    <string name="description_check_category">Is category selected indicator</string>
 </resources>
