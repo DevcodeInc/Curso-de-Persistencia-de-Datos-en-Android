@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.brunoaybar.notekeeper.R
 
 import com.brunoaybar.notekeeper.model.Nota
+import com.brunoaybar.notekeeper.ui.extensions.inflate
 import kotlin.properties.Delegates
 
 class NotesAdapter(var listener: Listener? = null)
@@ -28,7 +29,7 @@ class NotesAdapter(var listener: Listener? = null)
     private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_nota, parent,false))
+        return ViewHolder(inflate(R.layout.item_nota, parent))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
