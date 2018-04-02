@@ -6,6 +6,8 @@
     <string name="action_download">Descargar</string>
     <string name="title_activity_main2">Main2Activity</string>
 
+    <string name="welcome_no_user">Bienvenido, alumno</string>
+    <string name="welcome_user">Bienvenido, %s</string>
     <string name="course_name">Curso de Persistencia de Datos</string>
     <string name="navigation_drawer_open">Abrir menu</string>
     <string name="navigation_drawer_close">Cerrar menu</string>
@@ -20,4 +22,18 @@
     <string name="note_option_categories">Categorias</string>
     <string name="note_option_save">Guardar</string>
     <string name="description_check_category">Is category selected indicator</string>
+
+    <string name="settings_name">Nombre de usuario</string>
+    <string name="settings_name_hint">Escribe tu nombre de usuario</string>
+    <string name="settings_name_prefill"></string>
+    <string name="settings_notes_ui">Estilo del listado</string>
+    <string-array name="settings_notes_styles">
+        <item>Grilla</item>
+        <item>Listado</item>
+    </string-array>
+
+
+    <string-array name="text_yes">Si</string-array>
+    <string-array name="text_no">No</string-array>
+
 </resources>

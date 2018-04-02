@@ -1,9 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.brunoaybar.notekeeper.ui.SettingsActivity">
 
-</android.support.v7.widget.RecyclerView>
+    <TextView
+        android:id="@+id/settingsNameView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center_vertical"
+        android:text="@string/settings_name"
+        android:paddingLeft="16dp"
+        android:clickable="true"
+        android:focusable="true"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#ddd"
+        />
+    <TextView
+        android:id="@+id/settingsStyleView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center_vertical"
+        android:text="@string/settings_notes_ui"
+        android:paddingLeft="16dp"
+        android:clickable="true"
+        android:focusable="true"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#ddd"
+        />
+</LinearLayout>

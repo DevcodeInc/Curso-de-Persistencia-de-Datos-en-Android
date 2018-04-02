@@ -25,7 +25,11 @@ import android.os.Build
 import android.support.v4.content.ContextCompat
 import com.brunoaybar.notekeeper.model.Nota
 import com.brunoaybar.notekeeper.persistance.CategoriasRepository
+import com.brunoaybar.notekeeper.persistance.SettingsRepository
 import com.brunoaybar.notekeeper.ui.adapters.NotesAdapter
+import android.widget.TextView
+
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener  {
 
@@ -181,6 +185,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun loadName(){
+        val name = SettingsRepository.getInstance().getSavedName(this)
+        val welcomeText = when{
+            name.isNullOrBlank() -> getString(R.string.welcome_no_user)
+            else -> getString(R.string.welcome_user, name)
+        }
+
+        val headerView = nav_view.getHeaderView(0)
+        val userTextView = headerView.findViewById(R.id.userTextView) as TextView
+        userTextView.text = welcomeText
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadName()
     }
 
     //endregion
